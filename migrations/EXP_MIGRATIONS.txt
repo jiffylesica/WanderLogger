@@ -1,0 +1,16 @@
+A migration is a version-controlled file that tells database
+how to build or update structure. For example, you could write
+a migration which says I want a table called 'journeys' with
+a, b, c columns. Knex runs migrations and creates tables for you.
+If you need to change database, you can write a new migration to
+add, delete, or modify columns.
+
+TL:DR Migrations are how you talk to database to create tables
+
+Sample ex.
+
+Create a migration file called users. This will contain the instructions
+to create teh users table.
+
+Then, when you npx knex migrate:latest, all new migration files will be
+applied to datavase.
