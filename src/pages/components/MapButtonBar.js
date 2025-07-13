@@ -5,10 +5,11 @@ import {
   Divider,
   IconButton,
   Tooltip,
-} from "@mui/material";
-import PlaceIcon from "@mui/icons-material/Place";
-import SaveIcon from "@mui/icons-material/Save";
-import SearchIcon from "@mui/icons-material/Search";
+} from '@mui/material';
+import PlaceIcon from '@mui/icons-material/Place';
+import SaveIcon from '@mui/icons-material/Save';
+import SearchIcon from '@mui/icons-material/Search';
+import { useRef } from 'react';
 
 export default function MapButtonBar({
   dropPinsEnabled,
@@ -17,25 +18,25 @@ export default function MapButtonBar({
   onSearchSubmit,
   searchQuery,
   setSearchQuery,
+  searchBarRef,
 }) {
   return (
     <Stack
       direction="row"
       spacing={2}
       divider={<Divider orientation="vertical" flexItem />}
-      sx={{ alignItems: "center", height: 56 }}
+      sx={{ alignItems: 'center', height: 56 }}
     >
-
-      <Tooltip title={dropPinsEnabled ? "Disable Pin Drop" : "Enable Pin Drop"}>
+      <Tooltip title={dropPinsEnabled ? 'Disable Pin Drop' : 'Enable Pin Drop'}>
         <IconButton
-            onClick={onTogglePins}
-            sx={{
-            backgroundColor: dropPinsEnabled ? "#4CAF50" : "#f44336", // bright green/red
-            color: "#fff",
+          onClick={onTogglePins}
+          sx={{
+            backgroundColor: dropPinsEnabled ? '#4CAF50' : '#f44336', // bright green/red
+            color: '#fff',
             '&:hover': {
-            backgroundColor: dropPinsEnabled ? "#45a049" : "#d32f2f",
-            }
-        }}
+              backgroundColor: dropPinsEnabled ? '#45a049' : '#d32f2f',
+            },
+          }}
         >
           <PlaceIcon />
         </IconButton>
@@ -48,7 +49,7 @@ export default function MapButtonBar({
       </Tooltip>
 
       {/* Search Section */}
-      <Box sx={{ display: "flex", alignItems: "center", flexGrow: 1 }}>
+      <Box ref={searchBarRef} sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
         <TextField
           label="Search"
           variant="filled"

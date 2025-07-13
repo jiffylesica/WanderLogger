@@ -15,23 +15,22 @@ Component: The page currently being rendered
 pageProps: any props to pass to the page
 return <Component ... /> --> tells Next.js to render requested page
 */
-export default function App({Component, pageProps}) {
+export default function App({ Component, pageProps }) {
+  return (
+    // Supplies aesthetics
+    <ThemeProvider theme={theme}>
+      {/* Sets margins/paddings and global typography */}
+      <CssBaseline />
 
-    return (
-        // Supplies aesthetics
-        <ThemeProvider theme={theme}>
-            {/* Sets margins/paddings and global typography */}
-            <CssBaseline />
+      {/* Injects metadata into the <head> of HTML */}
+      <Head>
+        <title>WanderLogger</title>
+        <meta name="viewport" content="initial-scale-1, width=device-width" />
+      </Head>
 
-            {/* Injects metadata into the <head> of HTML */}
-            <Head>
-                <title>WanderLogger</title>
-                <meta name="viewport" content='initial-scale-1, width=device-width' />
-            </Head>
-
-            <Header/>
-            {/* Renders whatever page user visits */}
-            <Component {...pageProps} />
-        </ThemeProvider>
-    );
+      <Header />
+      {/* Renders whatever page user visits */}
+      <Component {...pageProps} />
+    </ThemeProvider>
+  );
 }

@@ -11,7 +11,6 @@ require('dotenv').config();
 
 // This says we export config object so Knex can read it
 module.exports = {
-
   // 3 Environments, each can have a different database
 
   // Development environment: when building on own computer
@@ -22,12 +21,12 @@ module.exports = {
     connection: process.env.DATABASE_URL,
     // Tells Knex where to store migration files (table definitions)
     migrations: {
-      directory: './migrations'
+      directory: './migrations',
     },
     // Where seed files (starting test data) will go
     seeds: {
-      directory: './seeds'
-    }
+      directory: './seeds',
+    },
   },
 
   // Staging: for testing before deploying to users
@@ -35,16 +34,16 @@ module.exports = {
     client: 'postgresql',
     connection: {
       database: 'my_db',
-      user:     'username',
-      password: 'password'
+      user: 'username',
+      password: 'password',
     },
     pool: {
       min: 2,
-      max: 10
+      max: 10,
     },
     migrations: {
-      tableName: 'knex_migrations'
-    }
+      tableName: 'knex_migrations',
+    },
   },
 
   // For live, deployed version
@@ -52,16 +51,15 @@ module.exports = {
     client: 'postgresql',
     connection: {
       database: 'my_db',
-      user:     'username',
-      password: 'password'
+      user: 'username',
+      password: 'password',
     },
     pool: {
       min: 2,
-      max: 10
+      max: 10,
     },
     migrations: {
-      tableName: 'knex_migrations'
-    }
-  }
-
+      tableName: 'knex_migrations',
+    },
+  },
 };
