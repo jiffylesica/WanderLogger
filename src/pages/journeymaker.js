@@ -1,8 +1,9 @@
 // useState lets component remember values between renders
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 // Have to wait to load map component on window bc leaflet renders on window
 import dynamic from "next/dynamic";
-import { Container, Typography, Button, TextField, Stack, Box, Grid, Paper, List, ListItem, ListItemButton, ListItemText } from "@mui/material";
+import { Container, Typography, Button, TextField, TextareaAutosize, Stack, Box, Grid, Paper, List, ListItem, ListItemButton, ListItemText } from "@mui/material";
 import MapButtonBar from "./components/MapButtonBar";
 import PinDetailPanel from "./components/PinDetailPanel";
 
@@ -49,8 +50,10 @@ export default function JourneyMaker() {
 
     const saveJourney = async () => {
         try {
-            const journeyResponse = await fetch('api/journeys', {
-                method: 'POST',
+            const method = journeyId ? 'PUT' : 'POST';
+            const endpoint = journeyId ? `api/journeys/${journeyId}` : 'api/journeys';
+            const journeyResponse = await fetch(endpoint, {
+                method,
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -109,95 +112,153 @@ export default function JourneyMaker() {
         setSearchResults(data);
     };
 
+    const router = useRouter();
+    const journeyId = router.query.id;
+
+    useEffect(() => {
+        const loadJourney = async () => {
+            if (!journeyId || isNaN(Number(journeyId))) return;
+            try {
+                const res = await fetch(`api/journeys/${journeyId}`);
+                const data = await res.json();
+
+                setJourneyTitle(data.journey.journey_title);
+                setJourneyDescription(data.journey.journey_description);
+
+                // TODO load pins
+            } catch (err) {
+                console.error("Failed to load journey", err);
+            };
+        }
+        loadJourney();
+    }, [journeyId]);
+
     return (
-        <Container maxWidth="xl">
-            <Stack spacing={3} mt={4} pb={6}>
-                <Typography>Create Your Journey</Typography>
+        <Container maxWidth="xl" sx={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
+            <Stack spacing={3} mt={4} pb={6} sx={{ flex: 1, minHeight: 0 }}>
+                <Typography
+                variant="h4"
+                align="center"
+                sx={{
+                    fontWeight: 600,
+                    mb: 1,
+                    color: 'text.primary'
+                }}
+                >
+                Welcome to the JourneyMaker
+                </Typography>
 
-                {/* Button that toggles pin drop mode */}
 
-                <TextField
-                    label="Journey Name"
+                <TextareaAutosize
                     value={JourneyTitle}
                     onChange={(e) => setJourneyTitle(e.target.value)}
-                    fullWidth
+                    placeholder="Enter Journey Title..."
+                    minRows={1}
+                    maxRows={1}
+                    style={{
+                        width: '100%',
+                        padding: '16px',
+                        fontSize: '1rem',
+                        fontFamily: 'inherit',
+                        borderRadius: '4px',
+                        border: '1px solid #ccc',
+                        boxSizing: 'border-box',
+                        overflow: 'hidden',
+                        resize: 'none', // prevents drag-resizing
+                    }}
                 />
 
-                <Box sx={{position: "relative", width: "100%"}}>
+
+
+            <Box sx={{ display: 'flex', width: '100%', flex: 1, minHeight: 0, mt: 2 }}>
                     
-                    <MapButtonBar
-                        dropPinsEnabled={dropPinsEnabled}
-                        onTogglePins={() => setDropPinsEnabled(!dropPinsEnabled)}
-                        onSaveJourney={saveJourney}
-                        onSearchSubmit={handleSearch}
-                        searchQuery={searchQuery}
-                        setSearchQuery={setSearchQuery}
-                    />
-
-                    {searchResults.length > 0 && (
-                        <Box sx={{mt: 2}}>
-                            <Paper>
-                                <List>
-                                    {searchResults.map((place, index) => (
-                                        <ListItem key={index} disablePadding>
-                                            <ListItemButton
-                                                onClick={() => {
-                                                    const lat = parseFloat(place.lat);
-                                                    const lng = parseFloat(place.lon);
-                                                    const bounds = place.boundingbox.map(parseFloat)
-                                                    setCenter([lat, lng]);
-                                                    setBounds(bounds);
-                                                    setSearchResults([]);
-                                                    setSearchQuery(place.display_name)
-                                                }}
-                                            >
-                                                <ListItemText primary={place.display_name} />
-                                            </ListItemButton>
-                                        </ListItem>
-                                    ))}
-                                </List>
-                            </Paper>
-                        </Box>
-                    )}
-
-                    <Box sx={{ width: "100%", mt: 3}} >
-                        {/* Render map and pass in state props --> props used in map to display markers */}
-                        <MapComponent 
-                            pins={pins}
-                            setPins={setPins}
+                    <Box sx={{ display: 'flex', flexDirection: 'column', width: '60%', height: '100%' }}>
+                        
+                        <MapButtonBar
                             dropPinsEnabled={dropPinsEnabled}
-                            center={center}
-                            setCenter={setCenter}
-                            bounds={bounds}
-                            setBounds={setBounds}
-                            zoom={zoom}
-                            setZoom={setZoom}
-                            setActivePin={setActivePin}
-                            setIsPinPanelOpen={setIsPinPanelOpen}
-                            setIsEditMode={setIsEditMode}
+                            onTogglePins={() => setDropPinsEnabled(!dropPinsEnabled)}
+                            onSaveJourney={saveJourney}
+                            onSearchSubmit={handleSearch}
+                            searchQuery={searchQuery}
+                            setSearchQuery={setSearchQuery}
                         />
 
-                        <PinDetailPanel
-                            isPinPanelOpen={isPinPanelOpen}
-                            setIsPinPanelOpen={setIsPinPanelOpen}
-                            isEditMode={isEditMode}
-                            setIsEditMode={setIsEditMode}
-                            activePin={activePin}
-                            setActivePin={setActivePin}
-                            setPins={setPins}
-                        />
+                        {searchResults.length > 0 && (
+                            <Box sx={{mt: 2}}>
+                                <Paper>
+                                    <List>
+                                        {searchResults.map((place, index) => (
+                                            <ListItem key={index} disablePadding>
+                                                <ListItemButton
+                                                    onClick={() => {
+                                                        const lat = parseFloat(place.lat);
+                                                        const lng = parseFloat(place.lon);
+                                                        const bounds = place.boundingbox.map(parseFloat)
+                                                        setCenter([lat, lng]);
+                                                        setBounds(bounds);
+                                                        setSearchResults([]);
+                                                        setSearchQuery(place.display_name)
+                                                    }}
+                                                >
+                                                    <ListItemText primary={place.display_name} />
+                                                </ListItemButton>
+                                            </ListItem>
+                                        ))}
+                                    </List>
+                                </Paper>
+                            </Box>
+                        )}
+
+                        <Box sx={{ flex: 1, mt: 3, minHeight: 0 }} >
+                            {/* Render map and pass in state props --> props used in map to display markers */}
+                            <MapComponent 
+                                pins={pins}
+                                setPins={setPins}
+                                dropPinsEnabled={dropPinsEnabled}
+                                center={center}
+                                setCenter={setCenter}
+                                bounds={bounds}
+                                setBounds={setBounds}
+                                zoom={zoom}
+                                setZoom={setZoom}
+                                setActivePin={setActivePin}
+                                setIsPinPanelOpen={setIsPinPanelOpen}
+                                setIsEditMode={setIsEditMode}
+                            />
+
+                            <PinDetailPanel
+                                isPinPanelOpen={isPinPanelOpen}
+                                setIsPinPanelOpen={setIsPinPanelOpen}
+                                isEditMode={isEditMode}
+                                setIsEditMode={setIsEditMode}
+                                activePin={activePin}
+                                setActivePin={setActivePin}
+                                setPins={setPins}
+                            />
+                        </Box>
+
                     </Box>
 
+                    <Box sx={{ width: '40%', ml: 2, display: 'flex', flexDirection: 'column', height: '100%' }}>
+                        <TextareaAutosize
+                            value={JourneyDescription}
+                            onChange={(e) => setJourneyDescription(e.target.value)}
+                            placeholder="Write your journey description..."
+                            style={{
+                            height: '100%',
+                            width: '100%',
+                            resize: 'none',
+                            padding: '16px',
+                            fontSize: '1rem',
+                            fontFamily: 'inherit',
+                            borderRadius: '4px',
+                            border: '1px solid #ccc',
+                            boxSizing: 'border-box',
+                            overflow: 'auto',
+                            }}
+                        />
+                    </Box>
                 </Box>
-
-                <TextField
-                    label="Journey Description"
-                    value={JourneyDescription}
-                    onChange={(e) => setJourneyDescription(e.target.value)}
-                    multiline
-                    rows={4}
-                    fullWidth
-                />
 
             </Stack>
         </Container>

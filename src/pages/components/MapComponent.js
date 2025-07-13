@@ -108,14 +108,26 @@ export default function MapComponent({
 
     // Actual map rendering
     return (
-        <MapContainer center={center} zoom={zoom} style={{height:'750px', width: '100%'}}>
+        <MapContainer 
+            center={center} 
+            zoom={zoom} 
+            style={{height:'100%', width: '100%'}}
+            worldCopyJump={false}
+            maxBoundsViscosity={1.0}
+            maxBounds={[
+                [-85, -180],
+                [85, 180]
+            ]}
+            zoomSnap={0.5}>
             <ZoomListener setZoom={setZoom} />
             <CenterListener setCenter={setCenter} />
             <RecenterMap bounds={bounds} setBounds={setBounds}/>
             <MapClickHandler />
             <TileLayer
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                    attribution="&copy; OpenStreetMap contributors"
+                url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+                attribution='&copy; <a href="https://carto.com/">Carto</a>'
+                subdomains={['a', 'b', 'c', 'd']}
+                noWrap={true}
             />
             {/* Goes through each pin, gives each marker a ID based on position in pin array,
             and position-{[pin.lat...]} places marker on the map

@@ -1,52 +1,67 @@
-import { Grid, TextField, Button, Stack, Divider, Box } from "@mui/material";
-import { useState } from "react";
+import {
+  Box,
+  TextField,
+  Stack,
+  Divider,
+  IconButton,
+  Tooltip,
+} from "@mui/material";
+import PlaceIcon from "@mui/icons-material/Place";
+import SaveIcon from "@mui/icons-material/Save";
+import SearchIcon from "@mui/icons-material/Search";
 
 export default function MapButtonBar({
-    dropPinsEnabled,
-    onTogglePins,
-    onSaveJourney,
-    onSearchSubmit,
-    searchQuery,
-    setSearchQuery
+  dropPinsEnabled,
+  onTogglePins,
+  onSaveJourney,
+  onSearchSubmit,
+  searchQuery,
+  setSearchQuery,
 }) {
-    return (
-        <Stack direction="row" spacing={2} divider={<Divider orientation="vertical" flexItem />} sx={{alignItems: "stretch", height: 56}}>
-                <Button 
-                    variant={dropPinsEnabled ? "outlined" : "contained"}
-                    color="primary"
-                    onClick={onTogglePins}
-                    sx={{width: '25%'}}
-                >
-                    {dropPinsEnabled ? "Disable Pin Drop" : "Enable Pin Drop"}
-                </Button>
+  return (
+    <Stack
+      direction="row"
+      spacing={2}
+      divider={<Divider orientation="vertical" flexItem />}
+      sx={{ alignItems: "center", height: 56 }}
+    >
 
-                <Button
-                    variant="contained"
-                    color="secondary"
-                    onClick={onSaveJourney}
-                    sx={{width: '25%'}}
-                >
-                    Save Journey
-                </Button>
+      <Tooltip title={dropPinsEnabled ? "Disable Pin Drop" : "Enable Pin Drop"}>
+        <IconButton
+            onClick={onTogglePins}
+            sx={{
+            backgroundColor: dropPinsEnabled ? "#4CAF50" : "#f44336", // bright green/red
+            color: "#fff",
+            '&:hover': {
+            backgroundColor: dropPinsEnabled ? "#45a049" : "#d32f2f",
+            }
+        }}
+        >
+          <PlaceIcon />
+        </IconButton>
+      </Tooltip>
 
-                <Box sx={{width: '50%', display: 'flex', alignItems: 'stretch'}}>
+      <Tooltip title="Save Journey">
+        <IconButton onClick={onSaveJourney} color="secondary">
+          <SaveIcon />
+        </IconButton>
+      </Tooltip>
 
-                    <TextField
-                        label="Search for a Location"
-                        variant="filled"
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        sx={{width: '75%'}}
-                    />
-
-                    <Button
-                        onClick={onSearchSubmit}
-                        variant="contained"
-                        sx={{width: '25%'}}
-                    > 
-                        Search
-                    </Button>
-                </Box>
-        </Stack>
-    )
+      {/* Search Section */}
+      <Box sx={{ display: "flex", alignItems: "center", flexGrow: 1 }}>
+        <TextField
+          label="Search"
+          variant="filled"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          sx={{ flexGrow: 1 }}
+        />
+        <Tooltip title="Search Location">
+          <IconButton onClick={onSearchSubmit} sx={{ ml: 1 }}>
+            <SearchIcon />
+          </IconButton>
+        </Tooltip>
+      </Box>
+    </Stack>
+  );
 }
