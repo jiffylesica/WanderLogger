@@ -21,6 +21,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { getServerSession } from 'next-auth';
 import { authOptions } from './api/auth/[...nextauth]';
 import { useSession } from 'next-auth/react';
+import db from '@/lib/db';
 
 export default function Home({ journeys }) {
   const router = useRouter();
@@ -184,10 +185,8 @@ export default function Home({ journeys }) {
 // Server side function that runs on server before page loads
 // Allows to pass data into page as props (when no parent)
 export async function getServerSideProps(context) {
-  // Get logged-in user session
   const session = await getServerSession(context.req, context.res, authOptions);
 
-  // If not logged in, redirect
   if (!session) {
     return {
       redirect: {
@@ -197,16 +196,20 @@ export async function getServerSideProps(context) {
     };
   }
 
-  // Fetch current users journey
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/journeys?user_id=${session.user.id}`
-  );
+  try {
+    const journeys = await db('journeys').where({ user_id: session.user.id });
 
-  const data = await res.json();
-
-  return {
-    props: {
-      journeys: data.journeys || [],
-    },
-  };
+    return {
+      props: {
+        journeys,
+      },
+    };
+  } catch (err) {
+    console.error('Failed to load journeys on homepage:', err);
+    return {
+      props: {
+        journeys: [],
+      },
+    };
+  }
 }
