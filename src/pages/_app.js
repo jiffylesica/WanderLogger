@@ -4,8 +4,8 @@
 // Global CSS file for leaflet, can only be imported in _app.js
 import 'leaflet/dist/leaflet.css';
 import { CssBaseline, ThemeProvider } from '@mui/material';
-import ReturnHome from './components/ReturnHomeButton';
-import Header from './components/Header';
+import ReturnHome from '../components/ReturnHomeButton';
+import Header from '../components/Header';
 import Head from 'next/head';
 import { ThemeContext } from '@emotion/react';
 import theme from '@/theme';

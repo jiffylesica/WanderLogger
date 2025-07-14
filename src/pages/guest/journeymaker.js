@@ -12,11 +12,11 @@ import {
   ListItemButton,
   ListItemText,
 } from '@mui/material';
-import MapButtonBar from '../components/MapButtonBar';
-import PinDetailPanel from '../components/PinDetailPanel';
+import MapButtonBar from '../../components/MapButtonBar';
+import PinDetailPanel from '../../components/PinDetailPanel';
 import { useRouter } from 'next/router';
 
-const MapComponent = dynamic(() => import('../components/MapComponent'), {
+const MapComponent = dynamic(() => import('../../components/MapComponent'), {
   ssr: false,
 });
 

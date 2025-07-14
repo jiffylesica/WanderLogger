@@ -18,11 +18,11 @@ import {
   ListItemButton,
   ListItemText,
 } from '@mui/material';
-import MapButtonBar from './components/MapButtonBar';
-import PinDetailPanel from './components/PinDetailPanel';
+import MapButtonBar from '../components/MapButtonBar';
+import PinDetailPanel from '../components/PinDetailPanel';
 
 // This basically says don't try to load the map component on the server side, wait until on browser
-const MapComponent = dynamic(() => import('./components/MapComponent'), {
+const MapComponent = dynamic(() => import('../components/MapComponent'), {
   ssr: false,
 });
 
