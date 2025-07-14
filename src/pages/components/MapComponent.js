@@ -13,12 +13,15 @@ import {
   useMapEvents,
 } from 'react-leaflet';
 import { useEffect, useState } from 'react';
+import PolylinePath from './PolylinePath';
+import { Pane } from 'react-leaflet';
+
 
 // Custom icon
 const albatrossIcon = L.icon({
   iconUrl: '/albatross_icon.png',
   iconSize: [32, 32],
-  iconAnchor: [16, 32],
+  iconAnchor: [16, 16],
   popupAnchor: [0, -32],
 });
 
@@ -117,8 +120,12 @@ export default function MapComponent({
     return null;
   }
 
+  const sortedPins = [...pins].sort((a, b) => new Date(a.date) - new Date(b.date));
+  const polylinePositions = sortedPins.map(pin => [pin.latitude, pin.longitude]);
+
   // Actual map rendering
   return (
+    
     <MapContainer
       center={center}
       zoom={zoom}
@@ -141,6 +148,9 @@ export default function MapComponent({
         subdomains={['a', 'b', 'c', 'd']}
         noWrap={true}
       />
+      <Pane name="polylinePane" style={{ zIndex: 399 }}>
+        <PolylinePath pins={pins} />
+      </Pane>
       {/* Goes through each pin, gives each marker a ID based on position in pin array,
             and position-{[pin.lat...]} places marker on the map
 

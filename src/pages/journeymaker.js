@@ -302,6 +302,7 @@ export default function JourneyMaker() {
                 activePin={activePin}
                 setActivePin={setActivePin}
                 setPins={setPins}
+                pins={pins}
               />
             </Box>
           </Box>

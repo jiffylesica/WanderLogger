@@ -18,6 +18,7 @@ export default function PinDetailPanel({
   activePin,
   setActivePin,
   setPins,
+  pins,
 }) {
   const handleClose = () => {
     setIsPinPanelOpen(false);
@@ -97,6 +98,25 @@ export default function PinDetailPanel({
       }));
     } else {
       setActivePin((prev) => ({ ...prev, [field]: value }));
+    }
+  };
+
+  const sortedPins = [...pins].sort((a, b) => new Date(a.date) - new Date(b.date));
+  const currentIndex = sortedPins.findIndex(
+    (pin) =>
+      pin.latitude === activePin?.latitude &&
+      pin.longitude === activePin?.longitude
+  );
+
+  const handleNext = () => {
+    if (currentIndex < sortedPins.length - 1) {
+      setActivePin(sortedPins[currentIndex + 1]);
+    }
+  };
+
+  const handlePrev = () => {
+    if (currentIndex > 0) {
+      setActivePin(sortedPins[currentIndex - 1]);
     }
   };
 
@@ -198,6 +218,16 @@ export default function PinDetailPanel({
               </Button>
             </Stack>
           </>
+        )}
+        {!isEditMode && (
+          <Stack direction="row" justifyContent="space-between" sx={{ mt: 2 }}>
+            <Button onClick={handlePrev} disabled={currentIndex <= 0}>
+              ← Previous
+            </Button>
+            <Button onClick={handleNext} disabled={currentIndex >= sortedPins.length - 1}>
+              Next →
+            </Button>
+          </Stack>
         )}
       </Stack>
     </Drawer>
