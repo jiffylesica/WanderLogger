@@ -30,6 +30,7 @@ const MapComponent = dynamic(() => import('../components/MapComponent'), {
 // Export defines the react component for the page
 // uses jsx within return
 export default function JourneyMaker() {
+  const router = useRouter();
   const { data: session, status } = useSession();
   // Store array of pin objects
   /*
@@ -66,8 +67,13 @@ export default function JourneyMaker() {
   const searchBarRef = useRef(null);
   const [dropDownPosition, setDropDownPosition] = useState({ top: 0, left: 0 });
 
-  const router = useRouter();
-  const journeyId = router.query.id;
+  const [journeyId, setJourneyId] = useState(null);
+
+  useEffect(() => {
+    if (router.isReady) {
+      setJourneyId(router.query.id || null);
+    }
+  }, [router.isReady, router.query.id]);
 
   const saveJourney = async () => {
     if (!JourneyTitle.trim()) {

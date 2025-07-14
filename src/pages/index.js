@@ -184,6 +184,15 @@ export default function Home({ journeys }) {
 
 // Server side function that runs on server before page loads
 // Allows to pass data into page as props (when no parent)
+const serializeDates = (obj) => {
+  const result = {};
+  for (const key in obj) {
+    const value = obj[key];
+    result[key] = value instanceof Date ? value.toISOString() : value;
+  }
+  return result;
+};
+
 export async function getServerSideProps(context) {
   const session = await getServerSession(context.req, context.res, authOptions);
 
@@ -199,9 +208,10 @@ export async function getServerSideProps(context) {
   try {
     const journeys = await db('journeys').where({ user_id: session.user.id });
 
+    // ✅ Safely serialize dates BEFORE returning
     return {
       props: {
-        journeys,
+        journeys: journeys.map(serializeDates),
       },
     };
   } catch (err) {
