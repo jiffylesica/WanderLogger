@@ -16,7 +16,6 @@ import { useEffect, useState } from 'react';
 import PolylinePath from './PolylinePath';
 import { Pane } from 'react-leaflet';
 
-
 // Custom icon
 const albatrossIcon = L.icon({
   iconUrl: '/albatross_icon.png',
@@ -120,12 +119,16 @@ export default function MapComponent({
     return null;
   }
 
-  const sortedPins = [...pins].sort((a, b) => new Date(a.date) - new Date(b.date));
-  const polylinePositions = sortedPins.map(pin => [pin.latitude, pin.longitude]);
+  const sortedPins = [...pins].sort(
+    (a, b) => new Date(a.date) - new Date(b.date)
+  );
+  const polylinePositions = sortedPins.map((pin) => [
+    pin.latitude,
+    pin.longitude,
+  ]);
 
   // Actual map rendering
   return (
-    
     <MapContainer
       center={center}
       zoom={zoom}

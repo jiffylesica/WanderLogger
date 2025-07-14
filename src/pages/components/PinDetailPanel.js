@@ -101,7 +101,9 @@ export default function PinDetailPanel({
     }
   };
 
-  const sortedPins = [...pins].sort((a, b) => new Date(a.date) - new Date(b.date));
+  const sortedPins = [...pins].sort(
+    (a, b) => new Date(a.date) - new Date(b.date)
+  );
   const currentIndex = sortedPins.findIndex(
     (pin) =>
       pin.latitude === activePin?.latitude &&
@@ -224,7 +226,10 @@ export default function PinDetailPanel({
             <Button onClick={handlePrev} disabled={currentIndex <= 0}>
               ← Previous
             </Button>
-            <Button onClick={handleNext} disabled={currentIndex >= sortedPins.length - 1}>
+            <Button
+              onClick={handleNext}
+              disabled={currentIndex >= sortedPins.length - 1}
+            >
               Next →
             </Button>
           </Stack>

@@ -5,7 +5,9 @@ export default function PolylinePath({ pins }) {
   const metersToLatOffset = (m) => m / 111320;
   const LAT_OFFSET = metersToLatOffset(OFFSET_METERS);
 
-  const sortedPins = [...pins].sort((a, b) => new Date(a.date) - new Date(b.date));
+  const sortedPins = [...pins].sort(
+    (a, b) => new Date(a.date) - new Date(b.date)
+  );
 
   // Build shortened segments between pins
   const trimmedSegments = [];

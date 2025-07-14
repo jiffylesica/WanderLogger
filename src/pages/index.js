@@ -112,15 +112,22 @@ export default function Home({ journeys }) {
           }}
         >
           {localJourneys.length === 0 ? (
-            <Typography>No journeys yet. Start one below!</Typography>
+            <Box sx={{ pl: 0.5, display: 'flex', flexDirection: 'column' }}>
+              <Typography variant="subtitle1" fontWeight={300}>
+                No journeys yet. Start one below!
+              </Typography>
+            </Box>
           ) : (
-            <>
-              <Typography>My Journeys</Typography>
+            <Box sx={{ pl: 0.5, display: 'flex', flexDirection: 'column' }}>
+              <Typography variant="subtitle1" fontWeight={300}>
+                My Journeys
+              </Typography>
               {localJourneys.map((journey) => (
                 <Accordion
                   key={journey.id}
                   expanded={expanded === journey.id}
                   onChange={handleChange(journey.id)}
+                  sx={{ mt: 2 }}
                 >
                   <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                     <Typography variant="subtitle1">
@@ -157,13 +164,13 @@ export default function Home({ journeys }) {
                   </AccordionDetails>
                 </Accordion>
               ))}
-            </>
+            </Box>
           )}
 
           <Button
             variant="contained"
             fullWidth
-            sx={{ height: '56px', mt: 4 }}
+            sx={{ height: '56px', mt: 3 }}
             onClick={() => handleCreate()}
           >
             Create a New Journey
