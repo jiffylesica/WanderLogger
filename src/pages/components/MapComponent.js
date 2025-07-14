@@ -15,14 +15,8 @@ import {
 import { useEffect, useState } from 'react';
 import PolylinePath from './PolylinePath';
 import { Pane } from 'react-leaflet';
+import L from 'leaflet';
 
-// Custom icon
-const albatrossIcon = L.icon({
-  iconUrl: '/albatross_icon.png',
-  iconSize: [32, 32],
-  iconAnchor: [16, 16],
-  popupAnchor: [0, -32],
-});
 
 // react component with three props
 /*
@@ -44,6 +38,24 @@ export default function MapComponent({
   setIsPinPanelOpen,
   setIsEditMode,
 }) {
+  const [albatrossIcon, setAlbatrossIcon] = useState(null);
+
+  useEffect(() => {
+    // Only run this in the browser
+    if (typeof window !== 'undefined' && typeof L !== 'undefined') {
+      const icon = L.icon({
+        iconUrl: '/albatross_icon.png',
+        iconSize: [32, 32],
+        iconAnchor: [16, 16],
+        popupAnchor: [0, -32],
+      });
+      setAlbatrossIcon(icon);
+    }
+  }, []);
+
+  if (typeof window === 'undefined' || !albatrossIcon) {
+    return null; // prevent SSR crash and wait for client-side hydration
+  }
   // Create subcomponent within map to listen for clicks
   function MapClickHandler() {
     useMapEvents({
