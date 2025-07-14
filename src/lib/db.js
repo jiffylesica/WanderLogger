@@ -1,10 +1,12 @@
-// Shared database instance
+// db.js
 import knex from 'knex';
 import knexConfig from '../../knexfile';
 
-const env = process.env.NODE_ENV || 'development';
+const env =
+  process.env.VERCEL_ENV === 'production'
+    ? 'production'
+    : process.env.NODE_ENV || 'development';
 
-// Ensure the knex instance is reused across hot reloads (important in dev)
 let db;
 
 if (!global.__knexInstance) {
