@@ -44,7 +44,7 @@ export default function GuestHome() {
   }}
 >
   <Typography variant="body1" sx={{ color: '#856404' }}>
-    ⚠️ You&#29;re in <strong>Guest Mode</strong>. Functionality is limited — mock journeys aren't saved to the cloud, images can't be uploaded, and shared access is unavailable.
+    ⚠️ You&#29;re in <strong>Guest Mode</strong>. Functionality is limited — mock journeys aren&#29;t saved to the cloud, images can&#29;t be uploaded, and shared access is unavailable.
     <br />
     For the full WanderLogger experience, <strong>sign up with your email</strong> to save and revisit your journeys from any device.
   </Typography>
