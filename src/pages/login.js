@@ -83,6 +83,17 @@ export default function LoginPage() {
             >
               Don&#39;t have an account? Sign up
             </Button>
+
+            <Button
+              variant="outlined"
+              onClick={() => {
+                localStorage.setItem('isGuest', 'true');
+                document.cookie = "isGuest=true; path=/";
+                router.push('/guest');
+              }}
+            >
+              Continue as Guest
+            </Button>
           </Stack>
         </form>
       </Box>

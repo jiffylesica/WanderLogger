@@ -3,9 +3,23 @@ import Image from 'next/image';
 import ReturnHome from './ReturnHomeButton';
 import { useRouter } from 'next/router';
 import AuthButtons from './AuthButtons';
+import { useSession } from 'next-auth/react';
+import { GuestContext } from '@/pages/_app';
+import { useContext } from 'react';
 
 export default function Header() {
   const router = useRouter();
+  const { isGuest } = useContext(GuestContext);
+
+  const handleLogoClick = () => {
+    if (session) {
+      router.push('/');
+    } else if (isGuest) {
+      router.push('/guest');
+    } else {
+      router.push('/login');
+    }
+  };
 
   return (
     <Box
