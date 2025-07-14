@@ -49,9 +49,7 @@ module.exports = {
   // For live, deployed version
   production: {
     client: 'postgresql',
-    connection: {
-      database: process.env.DATABASE_URL,
-    },
+    connection: process.env.DATABASE_URL,
     pool: {
       min: 2,
       max: 10,
