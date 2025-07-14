@@ -34,6 +34,8 @@ module.exports = {
     client: 'postgresql',
     connection: {
       database: 'my_db',
+      user: 'username',
+      password: 'password',
     },
     pool: {
       min: 2,
@@ -49,8 +51,6 @@ module.exports = {
     client: 'postgresql',
     connection: {
       database: process.env.DATABASE_URL,
-      user: 'username',
-      password: 'password',
     },
     pool: {
       min: 2,
