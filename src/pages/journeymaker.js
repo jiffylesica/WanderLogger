@@ -20,6 +20,7 @@ import {
 } from '@mui/material';
 import MapButtonBar from '../components/MapButtonBar';
 import PinDetailPanel from '../components/PinDetailPanel';
+import { useSession } from 'next-auth/react';
 
 // This basically says don't try to load the map component on the server side, wait until on browser
 const MapComponent = dynamic(() => import('../components/MapComponent'), {
@@ -29,6 +30,7 @@ const MapComponent = dynamic(() => import('../components/MapComponent'), {
 // Export defines the react component for the page
 // uses jsx within return
 export default function JourneyMaker() {
+  const { data: session, status } = useSession();
   // Store array of pin objects
   /*
     1. pins = state variable
@@ -72,6 +74,10 @@ export default function JourneyMaker() {
       console.warn('Journey title is required to save');
       return;
     }
+    if (!session?.user?.id) {
+    console.error('User not authenticated — cannot save journey.');
+    return;
+    }
     try {
       const method = journeyId ? 'PUT' : 'POST';
       const endpoint = journeyId ? `api/journeys/${journeyId}` : 'api/journeys';
@@ -81,7 +87,7 @@ export default function JourneyMaker() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          user_id: 1,
+          user_id: session.user.id,
           journey_title: JourneyTitle,
           journey_description: JourneyDescription,
         }),
