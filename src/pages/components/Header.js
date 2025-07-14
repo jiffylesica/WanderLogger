@@ -2,6 +2,7 @@ import { Box, Stack, Typography } from '@mui/material';
 import Image from 'next/image';
 import ReturnHome from './ReturnHomeButton';
 import { useRouter } from 'next/router';
+import AuthButtons from './AuthButtons';
 
 export default function Header() {
   const router = useRouter();
@@ -34,6 +35,8 @@ export default function Header() {
           </Typography>
         </Stack>
       </Box>
+
+      <AuthButtons />
     </Box>
   );
 }

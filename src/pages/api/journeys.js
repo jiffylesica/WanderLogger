@@ -1,8 +1,7 @@
 import knex from 'knex';
 import knexConfig from '../../../knexfile';
-
+import db from '@/lib/db';
 // Create connection to development database with Knex
-const db = knex(knexConfig.development);
 
 export default async function handler(req, res) {
   // Only run for POST requests (creating new data)

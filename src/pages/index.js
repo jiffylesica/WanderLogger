@@ -18,6 +18,9 @@ import {
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { getServerSession } from 'next-auth';
+import { authOptions } from './api/auth/[...nextauth]';
+import { useSession } from 'next-auth/react';
 
 export default function Home({ journeys }) {
   const router = useRouter();
@@ -41,6 +44,16 @@ export default function Home({ journeys }) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [journeyToDelete, setJourneyToDelete] = useState(null);
   const [localJourneys, setLocalJourneys] = useState(journeys);
+
+  const { data: session, status } = useSession();
+
+  if (status === 'loading') {
+    return <p>Loading...</p>; // or a spinner
+  }
+
+  if (!session) {
+    return null;
+  }
 
   return (
     <>
@@ -90,7 +103,6 @@ export default function Home({ journeys }) {
         </Typography>
 
         <Box
-          fullWidth
           sx={{
             mt: 4,
             border: '1px solid #ccc',
@@ -99,47 +111,54 @@ export default function Home({ journeys }) {
             backgroundColor: '#fafafa',
           }}
         >
-          <Typography>My Journeys</Typography>
-          {localJourneys.map((journey) => (
-            <Accordion
-              key={journey.id}
-              expanded={expanded === journey.id}
-              onChange={handleChange(journey.id)}
-            >
-              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography variant="subtitle1">
-                  {journey.journey_title || 'Untitled Journey'}
-                </Typography>
-              </AccordionSummary>
-
-              <AccordionDetails>
-                <Typography sx={{ mb: 1 }}>
-                  {journey.journey_description || 'No Description Available'}
-                </Typography>
-
-                <Button
-                  variant="contained"
-                  size="small"
-                  onClick={() => handleEdit(journey.id)}
+          {localJourneys.length === 0 ? (
+            <Typography>No journeys yet. Start one below!</Typography>
+          ) : (
+            <>
+              <Typography>My Journeys</Typography>
+              {localJourneys.map((journey) => (
+                <Accordion
+                  key={journey.id}
+                  expanded={expanded === journey.id}
+                  onChange={handleChange(journey.id)}
                 >
-                  Edit Journey
-                </Button>
+                  <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                    <Typography variant="subtitle1">
+                      {journey.journey_title || 'Untitled Journey'}
+                    </Typography>
+                  </AccordionSummary>
 
-                <Button
-                  color="error"
-                  variant="outlined"
-                  startIcon={<DeleteIcon />}
-                  sx={{ ml: 0.5 }}
-                  onClick={() => {
-                    setJourneyToDelete(journey.id);
-                    setDialogOpen(true);
-                  }}
-                >
-                  Delete
-                </Button>
-              </AccordionDetails>
-            </Accordion>
-          ))}
+                  <AccordionDetails>
+                    <Typography sx={{ mb: 1 }}>
+                      {journey.journey_description ||
+                        'No Description Available'}
+                    </Typography>
+
+                    <Button
+                      variant="contained"
+                      size="small"
+                      onClick={() => handleEdit(journey.id)}
+                    >
+                      Edit Journey
+                    </Button>
+
+                    <Button
+                      color="error"
+                      variant="outlined"
+                      startIcon={<DeleteIcon />}
+                      sx={{ ml: 0.5 }}
+                      onClick={() => {
+                        setJourneyToDelete(journey.id);
+                        setDialogOpen(true);
+                      }}
+                    >
+                      Delete
+                    </Button>
+                  </AccordionDetails>
+                </Accordion>
+              ))}
+            </>
+          )}
 
           <Button
             variant="contained"
@@ -157,13 +176,25 @@ export default function Home({ journeys }) {
 
 // Server side function that runs on server before page loads
 // Allows to pass data into page as props (when no parent)
-export async function getServerSideProps() {
-  // Make request to API route to retrieve journeys (or local for development)
+export async function getServerSideProps(context) {
+  // Get logged-in user session
+  const session = await getServerSession(context.req, context.res, authOptions);
+
+  // If not logged in, redirect
+  if (!session) {
+    return {
+      redirect: {
+        destination: '/login',
+        permanent: false,
+      },
+    };
+  }
+
+  // Fetch current users journey
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/journeys`
+    `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/journeys?user_id=${session.user.id}`
   );
 
-  // Convert HTTP response to js object
   const data = await res.json();
 
   return {

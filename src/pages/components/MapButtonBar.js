@@ -49,7 +49,10 @@ export default function MapButtonBar({
       </Tooltip>
 
       {/* Search Section */}
-      <Box ref={searchBarRef} sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}>
+      <Box
+        ref={searchBarRef}
+        sx={{ display: 'flex', alignItems: 'center', flexGrow: 1 }}
+      >
         <TextField
           label="Search"
           variant="filled"

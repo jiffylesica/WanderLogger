@@ -62,9 +62,16 @@ export default function JourneyMaker() {
 
   // Search bar position
   const searchBarRef = useRef(null);
-  const [dropDownPosition, setDropDownPosition] = useState({top: 0, left: 0})
+  const [dropDownPosition, setDropDownPosition] = useState({ top: 0, left: 0 });
+
+  const router = useRouter();
+  const journeyId = router.query.id;
 
   const saveJourney = async () => {
+    if (!JourneyTitle.trim()) {
+      console.warn('Journey title is required to save');
+      return;
+    }
     try {
       const method = journeyId ? 'PUT' : 'POST';
       const endpoint = journeyId ? `api/journeys/${journeyId}` : 'api/journeys';
@@ -82,17 +89,17 @@ export default function JourneyMaker() {
 
       const journeyData = await journeyResponse.json();
       // Get id returned by json response
-      const journeyId = journeyData.journey.id;
+      const savedJourneyId = journeyData.journey.id;
 
       // Save each pin associated with journey
       for (const pin of pins) {
-        const pinResponse = await fetch('api/pins', {
+        const pinResponse = await fetch('/api/pins', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            journey_id: journeyId,
+            journey_id: savedJourneyId,
             pin_title: pin.title || '',
             pin_description: pin.description || '',
             latitude: pin.latitude,
@@ -129,39 +136,44 @@ export default function JourneyMaker() {
     setSearchResults(data);
 
     if (searchBarRef.current) {
-        const rect = searchBarRef.current.getBoundingClientRect();
-        setDropDownPosition({ top: rect.bottom + window.scrollY, left: rect.left });
+      const rect = searchBarRef.current.getBoundingClientRect();
+      setDropDownPosition({
+        top: rect.bottom + window.scrollY,
+        left: rect.left,
+      });
     }
   };
 
   // To close search on click
   useEffect(() => {
-  const handleClickOutside = (event) => {
-    if (searchBarRef.current && !searchBarRef.current.contains(event.target)) {
-      setSearchResults([]);
-    }
-  };
-  document.addEventListener('click', handleClickOutside);
-  return () => document.removeEventListener('click', handleClickOutside);
-}, []);
-
-
-  const router = useRouter();
-  const journeyId = router.query.id;
+    const handleClickOutside = (event) => {
+      if (
+        searchBarRef.current &&
+        !searchBarRef.current.contains(event.target)
+      ) {
+        setSearchResults([]);
+      }
+    };
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, []);
 
   useEffect(() => {
     const loadJourney = async () => {
       if (!journeyId || isNaN(Number(journeyId))) return;
       try {
-        const res = await fetch(`api/journeys/${journeyId}`);
+        // Fetch journey
+        const res = await fetch(`/api/journeys/${journeyId}`);
         const data = await res.json();
-
         setJourneyTitle(data.journey.journey_title);
         setJourneyDescription(data.journey.journey_description);
 
-        // TODO load pins
+        // Fetch pins
+        const pinRes = await fetch(`/api/pins/${journeyId}`);
+        const pinData = await pinRes.json();
+        setPins(pinData.pins || []);
       } catch (err) {
-        console.error('Failed to load journey', err);
+        console.error('Failed to load journey or pins', err);
       }
     };
     loadJourney();
@@ -216,30 +228,30 @@ export default function JourneyMaker() {
             }}
           >
             <Box sx={{ position: 'relative' }}>
-            <MapButtonBar
-              dropPinsEnabled={dropPinsEnabled}
-              onTogglePins={() => setDropPinsEnabled(!dropPinsEnabled)}
-              onSaveJourney={saveJourney}
-              onSearchSubmit={handleSearch}
-              searchQuery={searchQuery}
-              setSearchQuery={setSearchQuery}
-              searchBarRef={searchBarRef}
-            />
+              <MapButtonBar
+                dropPinsEnabled={dropPinsEnabled}
+                onTogglePins={() => setDropPinsEnabled(!dropPinsEnabled)}
+                onSaveJourney={saveJourney}
+                onSearchSubmit={handleSearch}
+                searchQuery={searchQuery}
+                setSearchQuery={setSearchQuery}
+                searchBarRef={searchBarRef}
+              />
             </Box>
 
             {searchResults.length > 0 && (
-              <Box 
+              <Box
                 sx={{
-                position: 'absolute',
-                zIndex: 1000,
-                top: `${dropDownPosition.top}px`,
-                left: `${dropDownPosition.left}px`,
-                width: '45%',
-                maxHeight: '240px',
-                overflowY: 'auto',
-                boxShadow: 3,
-                borderRadius: 1,
-              }}
+                  position: 'absolute',
+                  zIndex: 1000,
+                  top: `${dropDownPosition.top}px`,
+                  left: `${dropDownPosition.left}px`,
+                  width: '45%',
+                  maxHeight: '240px',
+                  overflowY: 'auto',
+                  boxShadow: 3,
+                  borderRadius: 1,
+                }}
               >
                 <Paper>
                   <List dense>
