@@ -1,7 +1,6 @@
-// src/components/Curve.js
 import { createLayerComponent } from '@react-leaflet/core';
 import L from 'leaflet';
-import 'leaflet-curve';  // make sure the plugin is loaded
+import 'leaflet-curve';
 
 // 1) Create function
 function createCurve({ positions, pathOptions, pane }, context) {
