@@ -15,7 +15,7 @@ export default function Header() {
     if (session) {
       router.push('/');
     } else if (isGuest) {
-      router.push('/guest');
+      router.push('/guest/');
     } else {
       router.push('/login');
     }
