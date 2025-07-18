@@ -14,11 +14,23 @@ import knexConfig from '../../../../knexfile';
 import { signIn } from 'next-auth/react';
 import bcrypt from 'bcrypt';
 import db from '@/lib/db';
+import GoogleProvider from 'next-auth/providers/google';
 
 // Define options for NextAuth
 export const authOptions = {
   secret: process.env.NEXTAUTH_SECRET,
   providers: [
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      authorization: {
+        params: {
+          prompt: 'select_account', // 👈 this forces account picker
+          access_type: 'offline',
+          response_type: 'code',
+        },
+      },
+    }),
     CredentialsProvider({
       name: 'Credentials',
       credentials: {
@@ -29,14 +41,12 @@ export const authOptions = {
         const user = await db('users')
           .where({ email: credentials.email })
           .first();
-
         if (!user) return null;
         const isValid = await bcrypt.compare(
           credentials.password,
           user.password
         );
         if (!isValid) return null;
-
         return { id: user.id, name: user.username, email: user.email };
       },
     }),
@@ -46,17 +56,37 @@ export const authOptions = {
   },
 
   callbacks: {
+    async signIn({ user, account }) {
+      if (account.provider === 'google') {
+        const existingUser = await db('users')
+          .where({ email: user.email })
+          .first();
+
+        if (!existingUser) {
+          const fakePassword = await bcrypt.hash(
+            Math.random().toString(36),
+            10
+          );
+          await db('users').insert({
+            username: user.name || user.email,
+            email: user.email,
+            password: fakePassword, // we fake a password for now
+          });
+        }
+      }
+      return true;
+    },
     async jwt({ token, user }) {
-      if (user) token.id = user.id;
+      if (user) {
+        const dbUser = await db('users').where({ email: user.email }).first();
+        if (dbUser) token.id = dbUser.id;
+      }
       return token;
     },
     async session({ session, token }) {
       if (token) session.user.id = token.id;
       return session;
     },
-  },
-  pages: {
-    signIn: '/login',
   },
 };
 

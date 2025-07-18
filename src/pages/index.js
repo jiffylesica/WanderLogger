@@ -46,16 +46,6 @@ export default function Home({ journeys }) {
   const [journeyToDelete, setJourneyToDelete] = useState(null);
   const [localJourneys, setLocalJourneys] = useState(journeys);
 
-  const { data: session, status } = useSession();
-
-  if (status === 'loading') {
-    return <p>Loading...</p>; // or a spinner
-  }
-
-  if (!session) {
-    return null;
-  }
-
   return (
     <>
       <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>

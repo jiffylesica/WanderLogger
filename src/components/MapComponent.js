@@ -17,7 +17,6 @@ import PolylinePath from './PolylinePath';
 import { Pane } from 'react-leaflet';
 import L from 'leaflet';
 
-
 // react component with three props
 /*
 1. pins = array of pins

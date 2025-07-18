@@ -34,21 +34,25 @@ export default function GuestHome() {
 
   return (
     <Container maxWidth="md" sx={{ mt: 4 }}>
-        <Box
-  sx={{
-    backgroundColor: '#fff3cd',
-    border: '1px solid #ffeeba',
-    borderRadius: 2,
-    padding: 2,
-    mb: 3,
-  }}
->
-  <Typography variant="body1" sx={{ color: '#856404' }}>
-    ⚠️ You&#29;re in <strong>Guest Mode</strong>. Functionality is limited — mock journeys aren&#29;t saved to the cloud, images can&#29;t be uploaded, and shared access is unavailable.
-    <br />
-    For the full WanderLogger experience, <strong>sign up with your email</strong> to save and revisit your journeys from any device.
-  </Typography>
-</Box>
+      <Box
+        sx={{
+          backgroundColor: '#fff3cd',
+          border: '1px solid #ffeeba',
+          borderRadius: 2,
+          padding: 2,
+          mb: 3,
+        }}
+      >
+        <Typography variant="body1" sx={{ color: '#856404' }}>
+          ⚠️ You&#29;re in <strong>Guest Mode</strong>. Functionality is limited
+          — mock journeys aren&#29;t saved to the cloud, images can&#29;t be
+          uploaded, and shared access is unavailable.
+          <br />
+          For the full WanderLogger experience,{' '}
+          <strong>sign up with your email</strong> to save and revisit your
+          journeys from any device.
+        </Typography>
+      </Box>
       <Typography variant="h5" align="center" sx={{ mb: 3 }}>
         Welcome, Guest! Start Exploring
       </Typography>
@@ -72,7 +76,6 @@ export default function GuestHome() {
                 </Typography>
               </AccordionDetails>
             </Accordion>
-            
           ))
         )}
 

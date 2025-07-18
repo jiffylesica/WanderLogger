@@ -39,7 +39,10 @@ export default function App({
           {/* Injects metadata into the <head> of HTML */}
           <Head>
             <title>WanderLogger</title>
-            <meta name="viewport" content="initial-scale-1, width=device-width" />
+            <meta
+              name="viewport"
+              content="initial-scale-1, width=device-width"
+            />
           </Head>
 
           <Header />

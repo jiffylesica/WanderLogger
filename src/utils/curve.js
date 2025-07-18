@@ -6,11 +6,7 @@
  * @param {number}         curveFactor  – bulge factor
  * @returns {Array}       – ['M',[lat0,lng0],'Q',[cx,cy],[lat1,lng1]]
  */
-export function getBezierCommand(
-  start,
-  end,
-  curveFactor = 0.2
-) {
+export function getBezierCommand(start, end, curveFactor = 0.2) {
   const [lat0, lng0] = start;
   const [lat1, lng1] = end;
 
@@ -21,9 +17,11 @@ export function getBezierCommand(
   // Direction & perp vector
   const dx = lat1 - lat0;
   const dy = lng1 - lng0;
-  let px = -dy, py = dx;
+  let px = -dy,
+    py = dx;
   const len = Math.hypot(px, py) || 1;
-  px /= len; py /= len;
+  px /= len;
+  py /= len;
 
   // Control point
   const distance = Math.hypot(dx, dy);

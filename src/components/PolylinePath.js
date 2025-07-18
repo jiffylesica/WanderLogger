@@ -9,8 +9,8 @@ export default function PolylinePath({ pins, curveFactor = 0.2 }) {
   return (
     <>
       {sorted.slice(0, -1).map((p0, i) => {
-        const p1   = sorted[i + 1];
-        const cmd  = getBezierCommand(
+        const p1 = sorted[i + 1];
+        const cmd = getBezierCommand(
           [p0.latitude, p0.longitude],
           [p1.latitude, p1.longitude],
           curveFactor

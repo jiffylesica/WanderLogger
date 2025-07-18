@@ -22,7 +22,4 @@ function updateCurve(layer, props, prevProps) {
   }
 }
 
-export const Curve = createLayerComponent(
-  createCurve,
-  updateCurve
-);
+export const Curve = createLayerComponent(createCurve, updateCurve);

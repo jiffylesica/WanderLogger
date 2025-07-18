@@ -81,8 +81,8 @@ export default function JourneyMaker() {
       return;
     }
     if (!session?.user?.id) {
-    console.error('User not authenticated — cannot save journey.');
-    return;
+      console.error('User not authenticated — cannot save journey.');
+      return;
     }
     try {
       const method = journeyId ? 'PUT' : 'POST';

@@ -11,7 +11,10 @@ export default function AuthButtons() {
     <div>
       {session ? (
         <>
-          <Button variant="outlined" onClick={() => signOut({ callbackUrl: '/login'})}>
+          <Button
+            variant="outlined"
+            onClick={() => signOut({ callbackUrl: '/login' })}
+          >
             Sign Out
           </Button>
         </>
