@@ -16,6 +16,10 @@ import bcrypt from 'bcrypt';
 import db from '@/lib/db';
 import GoogleProvider from 'next-auth/providers/google';
 
+console.log('Google Client ID:', process.env.GOOGLE_CLIENT_ID);
+console.log('NextAuth URL:', process.env.NEXTAUTH_URL);
+console.log('NextAuth Secret exists:', !!process.env.NEXTAUTH_SECRET);
+
 // Define options for NextAuth
 export const authOptions = {
   secret: process.env.NEXTAUTH_SECRET,
